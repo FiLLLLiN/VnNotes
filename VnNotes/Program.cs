@@ -266,7 +266,7 @@ namespace VnNotes
 
             if (string.Equals(command, "help", StringComparison.OrdinalIgnoreCase))
             {
-                PrintInteractiveHelp();
+                commandMapService.PrintInteractiveHelp();
                 return true;
             }
 
@@ -545,30 +545,30 @@ namespace VnNotes
             return true;
         }
 
-        private static void PrintInteractiveHelp()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Доступные команды:");
-            Console.WriteLine("help");
-            Console.WriteLine("version");
-            Console.WriteLine("map");
-            Console.WriteLine("add \"Текст заметки\"");
-            Console.WriteLine("notes");
-            Console.WriteLine("delete 1");
-            Console.WriteLine("create-user student 12345 user");
-            Console.WriteLine("users");
-            Console.WriteLine("unlock student");
-            Console.WriteLine("register-node app-server-1 10.0.0.10 \"Сервер приложений\"");
-            Console.WriteLine("metrics");
-            Console.WriteLine("save-metrics");
-            Console.WriteLine("metrics-list");
-            Console.WriteLine("logs 20");
-            Console.WriteLine("update-check");
-            Console.WriteLine("update-download");
-            Console.WriteLine("update-apply");
-            Console.WriteLine("exit");
-            Console.WriteLine();
-        }
+        //private static void PrintInteractiveHelp()
+        //{
+        //    Console.WriteLine();
+        //    Console.WriteLine("Доступные команды:");
+        //    Console.WriteLine("help");
+        //    Console.WriteLine("version");
+        //    Console.WriteLine("map");
+        //    Console.WriteLine("add \"Текст заметки\"");
+        //    Console.WriteLine("notes");
+        //    Console.WriteLine("delete 1");
+        //    Console.WriteLine("create-user student 12345 user");
+        //    Console.WriteLine("users");
+        //    Console.WriteLine("unlock student");
+        //    Console.WriteLine("register-node app-server-1 10.0.0.10 \"Сервер приложений\"");
+        //    Console.WriteLine("metrics");
+        //    Console.WriteLine("save-metrics");
+        //    Console.WriteLine("metrics-list");
+        //    Console.WriteLine("logs 20");
+        //    Console.WriteLine("update-check");
+        //    Console.WriteLine("update-download");
+        //    Console.WriteLine("update-apply");
+        //    Console.WriteLine("exit");
+        //    Console.WriteLine();
+        //}
 
         private static string[] SplitCommandLine(string input)
         {
