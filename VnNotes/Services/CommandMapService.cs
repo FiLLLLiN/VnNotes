@@ -8,40 +8,49 @@ namespace VnNotes
     /// <summary>
     /// Выводит справку и создает Markdown-карту команд.
     /// </summary>
-    public sealed class CommandMapService
+    public class CommandMapService
     {
-        public void PrintHelp()
+        public void PrintInteractiveHelp()
         {
-            Console.WriteLine("VN Notes — консольная система заметок и мониторинга");
             Console.WriteLine();
+            Console.WriteLine("Доступные команды:");
+            Console.WriteLine(new string('-', 110));
 
-            Console.WriteLine("Команды без авторизации:");
-            Console.WriteLine("vn --help");
-            Console.WriteLine("vn --version");
-            Console.WriteLine("vn --db-check");
-            Console.WriteLine("vn --db-init");
-            Console.WriteLine("vn --map");
+            PrintCommand("help", "Показывает справку по командам.");
+            PrintCommand("version", "Показывает текущую версию приложения.");
+            PrintCommand("map", "Создает Markdown-файл COMMANDS.md с картой команд.");
 
+            PrintCommand("add", "Создает новую заметку.");
+            PrintCommand("notes", "Показывает список заметок.");
+            PrintCommand("delete", "Удаляет заметку по ID.");
+
+            PrintCommand("create-user", "Создает нового пользователя. Доступно только роли admin.");
+            PrintCommand("users", "Показывает список пользователей. Доступно только роли admin.");
+            PrintCommand("unlock", "Разблокирует пользователя. Доступно только роли admin.");
+
+            PrintCommand("register-node", "Регистрирует узел ИТ-инфраструктуры. Доступно ролям admin и operator.");
+            PrintCommand("metrics", "Показывает текущую статистику CPU, RAM и HDD. Доступно ролям admin и operator.");
+            PrintCommand("save-metrics", "Сохраняет текущую статистику CPU, RAM и HDD в PostgreSQL.");
+            PrintCommand("metrics-list", "Показывает последнюю сохраненную статистику по узлам инфраструктуры.");
+
+            PrintCommand("logs", "Показывает журнал безопасности. Доступно только роли admin.");
+
+            PrintCommand("update-check", "Проверяет наличие новой версии приложения через GitHub.");
+            PrintCommand("update-download", "Загружает архив новой версии приложения.");
+            PrintCommand("update-apply", "Запускает применение обновления через VnUpdater.");
+
+            PrintCommand("exit", "Завершает работу программы.");
+
+            Console.WriteLine(new string('-', 110));
             Console.WriteLine();
-
-            Console.WriteLine("Команды с авторизацией:");
-            Console.WriteLine("vn --login admin admin123 --addNewNote \"Текст заметки\"");
-            Console.WriteLine("vn --login admin admin123 --notes");
-            Console.WriteLine("vn --login admin admin123 --deleteNote 1");
-            Console.WriteLine("vn --login admin admin123 --createUser student 12345 user");
-            Console.WriteLine("vn --login admin admin123 --users");
-            Console.WriteLine("vn --login admin admin123 --unlockUser student");
-            Console.WriteLine("vn --login operator operator123 --registerNode app-server-1 10.0.0.10 \"Сервер приложений\"");
-            Console.WriteLine("vn --login operator operator123 --metrics");
-            Console.WriteLine("vn --login operator operator123 --saveMetrics");
-            Console.WriteLine("vn --login operator operator123 --metrics-list");
-            Console.WriteLine("vn --login admin admin123 --logs 20");
-            Console.WriteLine("vn --login admin admin123 --update-check");
-            Console.WriteLine("vn --login admin admin123 --update-download");
-            Console.WriteLine("vn --login admin admin123 --update-apply");
         }
 
-        public async Task CreateMarkdownAsync(string path)
+        private static void PrintCommand(string command, string description)
+        {
+            Console.WriteLine(command.PadRight(18) + " — " + description);
+        }
+
+        public Task CreateMarkdownAsync(string path)
         {
             string markdown =
 @"# VN Notes
@@ -50,38 +59,120 @@ namespace VnNotes
 
 VN Notes — консольная система для создания заметок, авторизации пользователей, просмотра статистики CPU/RAM/HDD, ведения журнала безопасности и проверки обновлений через GitHub.
 
-## Роли
+## Роли пользователей
 
-| Роль | Возможности |
+| Роль | Назначение |
 |---|---|
-| admin | Полный доступ |
-| operator | Заметки, узлы инфраструктуры, статистика |
+| admin | Полный доступ к системе |
+| operator | Работа с заметками, узлами инфраструктуры и статистикой |
 | user | Работа со своими заметками |
 
-## Команды
+## Команды до авторизации
 
-### Справка
+| Команда | Назначение |
+|---|---|
+| help | Показывает справку по командам |
+| version | Показывает текущую версию приложения |
+| map | Создает Markdown-файл COMMANDS.md с картой команд |
 
-```bash
-vn --help
-vn --version
-vn --db-init
-vn --db-check
-vn --login admin admin123 --addNewNote ""Текст заметки""
-vn --login admin admin123 --notes
-vn --login admin admin123 --deleteNote 1
-vn --login admin admin123 --createUser student 12345 user
-vn --login admin admin123 --users
-vn --login operator operator123 --registerNode app-server-1 10.0.0.10 ""Сервер приложений""
-vn --login operator operator123 --metrics
-vn --login operator operator123 --saveMetrics
-vn --login operator operator123 --metrics-list
-vn --login admin admin123 --logs 20
-vn --login admin admin123 --update-check
-vn --login admin admin123 --update-download
-vn --login admin admin123 --update-apply
+## Команды после авторизации
+
+| Команда | Назначение | Доступ |
+|---|---|---|
+| add | Создает новую заметку | admin, operator, user |
+| notes | Показывает список заметок | admin, operator, user |
+| delete | Удаляет заметку по ID | admin, operator, user |
+| create-user | Создает нового пользователя | admin |
+| users | Показывает список пользователей | admin |
+| unlock | Разблокирует пользователя | admin |
+| register-node | Регистрирует узел ИТ-инфраструктуры | admin, operator |
+| metrics | Показывает текущую статистику CPU, RAM и HDD | admin, operator |
+| save-metrics | Сохраняет текущую статистику CPU, RAM и HDD в PostgreSQL | admin, operator |
+| metrics-list | Показывает последнюю сохраненную статистику по узлам инфраструктуры | admin, operator |
+| logs | Показывает журнал безопасности | admin |
+| update-check | Проверяет наличие новой версии приложения через GitHub | admin |
+| update-download | Загружает архив новой версии приложения | admin |
+| update-apply | Запускает применение обновления через VnUpdater | admin |
+| exit | Завершает работу программы | admin, operator, user |
+
+## Описание команд
+
+### help
+
+Команда используется для вывода справки внутри консольного приложения.
+
+### version
+
+Команда выводит текущую версию приложения, указанную в файле App.config.
+
+### map
+
+Команда создает файл COMMANDS.md. В этом файле сохраняется карта команд приложения.
+
+### add
+
+Команда используется для создания новой заметки. Заметка сохраняется в таблицу notes и связывается с текущим авторизованным пользователем.
+
+### notes
+
+Команда выводит список заметок. Пользователь с ролью admin видит все заметки, остальные пользователи видят только свои записи.
+
+### delete
+
+Команда удаляет заметку по ее идентификатору. Пользователь с ролью admin может удалить любую заметку, остальные пользователи могут удалить только свои заметки.
+
+### create-user
+
+Команда используется для создания нового пользователя. При создании пароль преобразуется в MD5-хеш и сохраняется в таблицу app_users.
+
+### users
+
+Команда выводит список пользователей системы, их роли, состояние блокировки и количество неудачных попыток входа.
+
+### unlock
+
+Команда снимает блокировку с пользователя и сбрасывает количество неудачных попыток входа.
+
+### register-node
+
+Команда используется для регистрации узла ИТ-инфраструктуры. В качестве узла может выступать сервер приложений, сервер базы данных, шлюз, балансировщик или рабочая станция.
+
+### metrics
+
+Команда показывает текущую статистику устройства, на котором запущена программа. Отображаются показатели CPU, RAM и HDD.
+
+### save-metrics
+
+Команда сохраняет текущую статистику CPU, RAM и HDD в базу данных PostgreSQL.
+
+### metrics-list
+
+Команда выводит последнюю сохраненную статистику по зарегистрированным узлам инфраструктуры.
+
+### logs
+
+Команда выводит журнал безопасности. В журнал записываются события авторизации, создания заметок, удаления заметок, проверки обновлений и другие действия пользователей.
+
+### update-check
+
+Команда проверяет наличие новой версии приложения через GitHub. Для этого используется файл version.json.
+
+### update-download
+
+Команда загружает архив новой версии приложения из GitHub Releases в локальную папку updates.
+
+### update-apply
+
+Команда запускает установку новой версии приложения через отдельную программу VnUpdater.
+
+### exit
+
+Команда завершает работу консольного приложения.
 ";
+
             File.WriteAllText(path, markdown, Encoding.UTF8);
+
+            return Task.FromResult(0);
         }
     }
 }
