@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="VnNotes/VnNotes.csproj" />
+  <Project Path="VnUpdater/VnUpdater.csproj" />
+</Solution>
